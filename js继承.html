@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+</head>
+<body>
+<script type="text/javascript">
+// 简单的实例，但存在bug
+// function fn1(){
+// 	this.arr = ['one','two','three'];
+// }
+// fn1.prototype.myNum = function(){
+// 	alert('hellow,world');
+// }
+// 将fn1函数实例化
+// var a = new fn1();
+// console.log(a.myNum())
+//下面的这个封装  有两个好处
+//1.让超类只调用一次
+//2.让子类可以任意的修改原型而不用担心影响超类
+function inheritproto(subType,superType){
+
+	function object(o){
+
+		function F(){};
+		F.prototype = o; //F.prototype   sayname
+		return new F(); // return var a = new F()   a  sayname
+	}
+	// prototype 变量  --- sayname
+	var prototype = object(superType.prototype);  //superType.prototype --- sayName
+	//将被更改的构造函数更改回来
+	prototype.constructor = subType;
+	//  子类的原型身上就有了超类的sayname方法
+	subType.prototype = prototype;
+
+}
+
+// 演示 
+// 超类 
+function SuperType(name){
+	this.name = name ;
+	this.color = ['green','red','blue'];
+}
+
+SuperType.prototype.sayName = function () {
+	alert(this.name);
+}
+
+// 创建子类
+function SubType(name,age){
+	SuperType.call(this,name);
+	this.age =age;
+}
+
+inheritproto(SubType,SuperType);
+
+SubType.prototype.sayAge = function (){
+	alert(this.age);
+}
+var a = new SubType('小明',19);
+
+
+
+// a.sayName();
+// a.sayAge();
+console.log(a);
+</script>
+</body>
+</html>
